@@ -1,22 +1,29 @@
-# healthcareapp backend
+# Backend (FastAPI)
 
-簡易的な FastAPI backend の雛形です。
+`backend/` は Healthcare App のAPIサーバーです。
 
-セットアップ
+## Setup
 
 ```bash
 python -m venv .venv
-source .venv/Scripts/activate   # Windows: .venv\Scripts\activate
+.venv\Scripts\activate
 pip install -r backend/requirements.txt
 cd backend
 uvicorn app.main:app --reload --port 8000
 ```
 
-初回起動時に `healthcare.db` が作られ、`/profile` エンドポイント（GET/PUT）と `/profile/compute` が使えます。
+初回起動時に `healthcare.db` が生成されます。
 
-Alembic:
+## Main Endpoints
+- `GET /profile`, `PUT /profile`
+- `GET /profile/compute`
+- `GET/POST/DELETE /body-logs`
+- `GET/POST/PUT/DELETE /meal-logs`
+- `GET /dashboard/summary`
+- `GET/POST/PUT/DELETE /workouts/templates`
+- `GET/POST/DELETE /workouts/sessions`
 
-To generate an initial migration (after first run) from the models:
+## Migration (Alembic)
 
 ```bash
 cd backend
@@ -24,4 +31,11 @@ alembic revision --autogenerate -m "init"
 alembic upgrade head
 ```
 
-Note: Alembic must be configured in the environment; `alembic.ini` and `alembic/env.py` are included as a scaffold.
+`alembic.ini` と `alembic/env.py` は同梱済みです。
+
+## Test
+
+```bash
+cd backend
+pytest -q
+```

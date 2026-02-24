@@ -1,81 +1,91 @@
-# Healthcare App (fullstack prototype)
+# Healthcare App
 
-This repository contains a FastAPI backend and a React+TypeScript frontend prototype for a personal health tracking app.
+React + FastAPI で作成した、筋トレ/栄養/身体データを一元管理するフルスタックアプリです。
 
-Backend (Python / FastAPI)
+## Features
+- プロフィール設定（年齢・身長・活動量・目標）
+- BMR / TDEE / 推奨摂取カロリーの算出
+- 身体ログ（体重・体脂肪率・睡眠）
+- 食事ログ（カロリー・タンパク質）
+- ワークアウトメニュー作成と当日セット記録
+- ダッシュボードで推移の可視化
 
-1. Create and activate a virtualenv
+## Tech Stack
+- Frontend: React, TypeScript, MUI, Recharts
+- Backend: FastAPI, SQLAlchemy, Pydantic
+- DB: SQLite
+- Deploy: Docker, Docker Compose
+
+## Quick Start (Docker)
+最短で動かす場合はこちら。
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate   # Windows
+docker compose up -d --build
 ```
 
-2. Install dependencies and run
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8000`
+
+停止:
 
 ```bash
+docker compose down
+```
+
+## Local Development
+
+### Backend
+```bash
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r backend/requirements.txt
 cd backend
 uvicorn app.main:app --reload --port 8000
 ```
 
-The backend will create `healthcare.db` on first run. Endpoints:
-
-- `GET /profile`, `PUT /profile`
-- `GET /profile/compute`
-- `GET/POST/DELETE /body-logs`
-- `GET/POST/PUT/DELETE /meal-logs` and `/meal-logs/range`
-- `GET/POST/PUT/DELETE /workouts/templates` and `/workouts/sessions`
-- `GET /dashboard/summary`
-
-Frontend (React)
-
-1. Install dependencies
-
+### Frontend
 ```bash
 cd frontend
 npm install
 npm start
 ```
 
-The frontend is a minimal skeleton that fetches `/dashboard/summary` and displays JSON. Expand pages under `frontend/src/pages`.
+## Environment Variables
 
-Acceptance checklist
+### Frontend
+- `REACT_APP_API_BASE_URL` (default: `http://localhost:8000`)
 
-- Fill profile and call `/profile/compute` to verify `TDEE` is returned.
-- Add meals and verify 7-day average appears in `/dashboard/summary`.
-- Add body logs and verify weight_series in `/dashboard/summary`.
+### Backend
+- `DATABASE_URL` (default: `sqlite:///./healthcare.db`)
+- `CORS_ORIGINS` (default: `*`)
 
-Run tests:
+サンプルは `.env.deploy.example` を参照してください。
+
+## Testing
 
 ```bash
 cd backend
 pytest -q
 ```
 
-## Deploy (Docker)
+## API Overview
+主なエンドポイント:
+- `GET /profile`, `PUT /profile`
+- `GET /profile/compute`
+- `GET/POST/DELETE /body-logs`
+- `GET/POST/PUT/DELETE /meal-logs`
+- `GET /dashboard/summary`
+- `GET/POST/PUT/DELETE /workouts/templates`
+- `GET/POST/DELETE /workouts/sessions`
 
-You can run both frontend and backend in production mode with Docker.
-
-1. Start services
-
-```bash
-docker compose up -d --build
+## Project Structure
+```text
+healthcareapp/
+  backend/     # FastAPI app
+  frontend/    # React app
+  docker-compose.yml
 ```
 
-2. Open app
-
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:8000`
-
-3. Stop services
-
-```bash
-docker compose down
-```
-
-Notes:
-
-- Backend DB is persisted in Docker volume `backend_data`.
-- Frontend API endpoint is controlled by `REACT_APP_API_BASE_URL` (build arg).
-- Backend CORS is controlled by `CORS_ORIGINS`.
+## Notes
+- このリポジトリは学習・プロトタイプ用途です。
+- 本番利用時は認証・権限管理・入力バリデーション強化を推奨します。
